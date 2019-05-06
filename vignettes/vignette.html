@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Jacob Yeung" />
+
+
+<title>binomial_vignette</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">binomial_vignette</h1>
+<h4 class="author"><em>Jacob Yeung</em></h4>
+<h4 class="date"><em>‘r Sys.Date()’</em></h4>
+
+
+
+<div id="binomial-distribution" class="section level1">
+<h1>Binomial Distribution</h1>
+<p>The package “binomial” is a method to calculate the various attributes of a binomial distribution given parameters.</p>
+<div id="using-the-math-choose-function" class="section level2">
+<h2>Using the math Choose function</h2>
+<p>To calculate the number of comibnations in which k successes can occur in n trials, we use the bin_choose() function:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">bin_choose</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">k =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; [1] 10</span></a></code></pre></div>
+</div>
+</div>
+<div id="creating-a-binomial-random-variable" class="section level1">
+<h1>Creating a Binomial Random Variable</h1>
+<p>To create a binomial random variable with k trials and probability prob, we use the function bin_variable():</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">variable =<span class="st"> </span><span class="kw">bin_variable</span>(<span class="dt">trials =</span> <span class="dv">5</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a></code></pre></div>
+<div id="calculating-the-binomial-probability" class="section level2">
+<h2>Calculating the Binomial Probability</h2>
+<p>To calculate the probability of k successes, each independent with probability prob, on n repeated trials, we use the bin_probability() function:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">bin_probability</span>(<span class="dt">success =</span> <span class="dv">2</span>, <span class="dt">trials =</span> <span class="dv">5</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; [1] 0.3125</span></a></code></pre></div>
+</div>
+<div id="calculating-the-binomial-distribution" class="section level2">
+<h2>Calculating the Binomial Distribution</h2>
+<p>To calculate the binomial distribution of k trials and probability prob, we use the bin_distribution() function:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">distribution =<span class="st"> </span><span class="kw">bin_distribution</span>(<span class="dt">trials =</span> <span class="dv">5</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2">distribution</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt;   Success Probability</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; 1       0     0.03125</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; 2       1     0.15625</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; 3       2     0.31250</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; 4       3     0.31250</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; 5       4     0.15625</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; 6       5     0.03125</span></a></code></pre></div>
+<div id="displaying-the-binomial-distribution" class="section level3">
+<h3>Displaying the Binomial Distribution</h3>
+<p>To plot the above calculated binomial distribution, we use the function plot.bindis():</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">plot.bindis</span>(distribution)</a></code></pre></div>
+<p><img src="data:image/png;base64,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kCAImIigvV/qnYqgvdNJEAVIEASMW9DjX+odt6AeXuodtaA+XskctaA+XuodtSCNIKKHl3rHLaiHl3pHLujx6SSIAqYpSH8w6y2dBFGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEGABEHANAXpL4q9pZMgChi3ID3d0Y6e7mhH380DOz/d0fmFjGEE9fIaxyAjqLOFgQQ1Fw0jaOenOyYraNenO6YraMd0EgTppitox43iZAXtulGcqiAt88DuG8WJCtIIIho3iqV9fNutRueiloT7Fw0kiDeK46PnfdD4kCBgT0FN76yOD40gQIIACQJ6vlkdHz3frI6Pnm81xkfPN6vjQyMI6PlbjfGhm1VA+yBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCBAggAJAiQIkCDgX/KafBBLa6NzAAAAAElFTkSuQmCC" /><!-- --></p>
+</div>
+</div>
+<div id="finding-the-cumulative-distribution-of-a-binomial-random-variable" class="section level2">
+<h2>Finding the Cumulative Distribution of a Binomial Random Variable</h2>
+<p>To find the cumulative distribution of k trials and probability prob, we use the function bin_cumulative():</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">cumulative_distribution =<span class="st"> </span><span class="kw">bin_cumulative</span>(<span class="dt">trials =</span> <span class="dv">5</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb6-2" title="2">cumulative_distribution</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt;   Success Probability cumulative</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt; 1       0     0.03125    0.03125</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; 2       1     0.15625    0.18750</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt; 3       2     0.31250    0.50000</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt; 4       3     0.31250    0.81250</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt; 5       4     0.15625    0.96875</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt; 6       5     0.03125    1.00000</span></a></code></pre></div>
+<div id="displaying-the-cumulative-distribution" class="section level3">
+<h3>Displaying the Cumulative Distribution</h3>
+<p>To plot the above calculated cumulative distribution, we use the function plot.bincum():</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">plot.bincum</span>(cumulative_distribution)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="creating-the-summary-of-a-binomial-variable" class="section level1">
+<h1>Creating the Summary of a Binomial Variable</h1>
+<p>To create the summary of a binomial variable, we use the function summary.binvar():</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">summary.binvar</span>(variable)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt; &quot;Summary Binomial&quot;</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; Parameters</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; - number of trials: 5 </span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; - prob of success : 0.5 </span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; Measures</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; - mean    : 2.5 </span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt; - variance: 1.25 </span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt; - mode    : 3 </span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt;  - mode    : 2 </span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt; - skewness: 0 </span></a>
+<a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt; - kurtosis: -0.4</span></a></code></pre></div>
+<div id="displaing-the-summary-of-a-binomial-variable" class="section level2">
+<h2>Displaing the Summary of a Binomial Variable</h2>
+<p>To displat the summary of a binomial variable, we use the function print.summary.binvar():</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">print.summary.binvar</span>(variable)</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="co">#&gt; &quot;Summary Binomial&quot;</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co">#&gt; Parameters</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">#&gt; - number of trials: 5 </span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="co">#&gt; - prob of success : 0.5 </span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="co">#&gt; Measures</span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="co">#&gt; - mean    :  </span></a>
+<a class="sourceLine" id="cb9-10" title="10"><span class="co">#&gt; - variance:  </span></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="co">#&gt; - mode    :  </span></a>
+<a class="sourceLine" id="cb9-12" title="12"><span class="co">#&gt; - skewness:  </span></a>
+<a class="sourceLine" id="cb9-13" title="13"><span class="co">#&gt; - kurtosis:</span></a></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
