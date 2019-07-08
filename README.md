@@ -122,7 +122,7 @@ summary.binvar(variable)
 
 ## Displaing the Summary of a Binomial Variable
 
-To displat the summary of a binomial variable, we use the function
+To display the summary of a binomial variable, we use the function
 print.summary.binvar():
 
 ``` r
