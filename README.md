@@ -8,7 +8,7 @@ of a binomial distribution given parameters. Below is an example of how
 to install the package.
 
 ``` r
-#devtools::install_github("jacobyeung/Binomial-Package")
+devtools::install_github("jacobyeung/Binomial_Package")
 library(binomial)
 ```
 
