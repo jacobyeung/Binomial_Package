@@ -11,7 +11,8 @@ to install the package.
 devtools::install_github("jacobyeung/Binomial_Package")
 library(binomial)
 ```
-
+Dependencies: 
+ggplot2
 ## Using the math Choose function
 
 To calculate the number of comibnations in which k successes can occur
