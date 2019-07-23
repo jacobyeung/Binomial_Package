@@ -6,7 +6,7 @@ library(roxygen2)
 #Private Checker Functions
 
 #checking for valid probability value
-check_prob = function(prob){
+# check_prob = function(prob){
   if(typeof(prob) != "double"){
     stop("pinvalid prob value")
   } else if(prob < 0 | prob > 1){
